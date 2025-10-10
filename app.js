@@ -239,10 +239,10 @@
     const dBase = isSp? (D['特防']??D.spd??0) : (D['防御']??D.def??0);
     const atk = isSp? statOther(aBase,31, atkI.spaEV, atkI.spaNature, lv)
                     : statOther(aBase,31, atkI.atkEV, atkI.atkNature, lv);
-    const def = isSp? statOther(dBase,31, defI.evD, defI.natD, lv)
+    const defStat = isSp? statOther(dBase,31, defI.evD, defI.natD, lv)
                     : statOther(dBase,31, defI.evB, defI.natB, lv);
     const hp  = statHP(D['HP']??D.hp??1,31, defI.evH, lv);
-    let base = Math.floor(Math.floor(Math.floor((2*lv/5+2) * (mv.power||0) * Math.max(1,atk) / Math.max(1,def)) / 50) + 2);
+    let base = Math.floor(Math.floor(Math.floor((2*lv/5+2) * (mv.power||0) * Math.max(1,atk) / Math.max(1,defStat)) / 50) + 2);
     const aT1=A['タイプ1']??A.type1??'', aT2=A['タイプ2']??A.type2??'';
     const dT1=D['タイプ1']??D.type1??'', dT2=D['タイプ2']??D.type2??'';
     const stab = (mv.type===aT1 || mv.type===aT2) ? 1.5 : 1.0;
