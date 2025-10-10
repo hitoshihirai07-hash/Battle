@@ -6,7 +6,27 @@
   const el=(t,a={})=>Object.assign(document.createElement(t),a);
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
-  // Tabs
+  
+  // Natures (Japanese) → multipliers
+  const NATURES = [
+    {name:'てれや(無補正)', atk:1.0, def:1.0, spa:1.0, spd:1.0, spe:1.0},
+    {name:'いじっぱり(攻↑ 特攻↓)', atk:1.1, def:1.0, spa:0.9, spd:1.0, spe:1.0},
+    {name:'ひかえめ(特攻↑ 攻↓)', atk:0.9, def:1.0, spa:1.1, spd:1.0, spe:1.0},
+    {name:'ようき(素早↑ 特攻↓)', atk:1.0, def:1.0, spa:0.9, spd:1.0, spe:1.1},
+    {name:'おくびょう(素早↑ 攻↓)', atk:0.9, def:1.0, spa:1.0, spd:1.0, spe:1.1},
+    {name:'ずぶとい(防御↑ 攻↓)', atk:0.9, def:1.1, spa:1.0, spd:1.0, spe:1.0},
+    {name:'わんぱく(防御↑ 特攻↓)', atk:1.0, def:1.1, spa:0.9, spd:1.0, spe:1.0},
+    {name:'のんき(防御↑ 素早↓)', atk:1.0, def:1.1, spa:1.0, spd:1.0, spe:0.9},
+    {name:'しんちょう(特防↑ 特攻↓)', atk:1.0, def:1.0, spa:0.9, spd:1.1, spe:1.0},
+    {name:'おだやか(特防↑ 攻↓)', atk:0.9, def:1.0, spa:1.0, spd:1.1, spe:1.0},
+    {name:'なまいき(特防↑ 素早↓)', atk:1.0, def:1.0, spa:1.0, spd:1.1, spe:0.9}
+  ];
+  function natureSelectHtml(cls='nature-select'){
+    return '<label>性格<select class="'+cls+'">'+
+      NATURES.map(n=>`<option value="${n.name}">${n.name}</option>`).join('')+
+      '</select></label>';
+  }
+// Tabs
   $$('.tab-btn').forEach(btn => btn.addEventListener('click', ()=>{
     $$('.tab-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
@@ -103,6 +123,7 @@
         <label>技3<input class="p-m3" list="dl_moves"></label>
         <label>技4<input class="p-m4" list="dl_moves"></label>
       </div>
+      <div class="nature-line">${natureSelectHtml("party-nature")}</div>
       <div class="presets">
         <span>EVプリセット:</span>
         <button type="button" data-ev="HA">HA252</button>
@@ -120,7 +141,7 @@
   function sixRowSelf(){
     const row = el('div',{className:'six-row self'});
     row.innerHTML = `
-      <label>名前<input class="self-name" list="dl_pokemon" placeholder="ポケモン名"></label>
+      <label>名前<input class="self-name" list="dl_pokemon" placeholder="ポケモン名"></label>${natureSelectHtml('self-nature')}
       <label>技1<input class="move1" list="dl_moves"></label>
       <label>技2<input class="move2" list="dl_moves"></label>
       <label>技3<input class="move3" list="dl_moves"></label>
@@ -132,7 +153,7 @@
   function sixRowOpp(){
     const row = el('div',{className:'six-row opp'});
     row.innerHTML = `
-      <label>名前<input class="opp-name" list="dl_pokemon" placeholder="ポケモン名"></label>
+      <label>名前<input class="opp-name" list="dl_pokemon" placeholder="ポケモン名"></label>${natureSelectHtml('opp-nature-full')}
       <label>耐久
         <select class="opp-def-preset">
           <option value="H0B0">H0/B0</option>
@@ -152,8 +173,8 @@
   }
 
   // Build initial UI: 6 party cards, and 3+3 six slots
-  const party = $('#party-self');
-  for(let i=0;i<6;i++) party?.appendChild(partyCard(i));
+  const pTop=$('#party-top'), pBot=$('#party-bottom');
+  for(let i=0;i<6;i++){ (i<3?pTop:pBot)?.appendChild(partyCard(i)); }
 
   const selfList = $('#six-self'), oppList = $('#six-opp');
   for(let i=0;i<3;i++) selfList?.appendChild(sixRowSelf());
@@ -175,6 +196,7 @@
     const rows = $$('#six-self .six-row.self');
     rows.forEach((r,i)=>{
       $('.self-name',r).value = names[i]||'';
+      const pn = $('.party-nature',cards[i])?.value; if(pn) $('.self-nature',r).value = pn;
       ['.move1','.move2','.move3','.move4'].forEach((s,j)=>$(s,r).value = (moves[i]?.[j]||''));
     });
   });

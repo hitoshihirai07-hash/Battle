@@ -43,3 +43,10 @@ main{padding:12px}
 #matrix th{background:#161a27}
 
 .speed-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+
+/* Party 3x3 layout */
+.party-two{display:grid;gap:10px}
+.party-row{display:grid;grid-template-columns:repeat(3,minmax(240px,1fr));gap:10px}
+@media (max-width:900px){ .party-row{grid-template-columns:repeat(2,minmax(220px,1fr));} }
+@media (max-width:600px){ .party-row{grid-template-columns:1fr;} }
+.party-card .nature-line{display:flex;gap:8px;align-items:center;margin-top:6px}
